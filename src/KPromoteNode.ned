@@ -75,6 +75,11 @@ module KPromoteNode
                 ownMACAddress = ownAddress;
                 @display("p=120,112");
         }
+        forwarding: KSpraywaitRoutingLayer if forwardingLayer == 4 {
+            parameters:
+                ownMACAddress = ownAddress;
+                @display("p=120,112");
+        }
 
         // link adaptation layer
         linkAdapt: KLinkAdaptLayer {

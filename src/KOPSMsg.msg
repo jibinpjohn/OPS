@@ -11,6 +11,7 @@
 // Keetchi  ->   6 + 6     64             1               2           512          4             6           -         601
 // RRS      ->   6 + 6     64             -               2           512          4             6           -         600
 // Epidemic ->   6 + 6     64             -               2           512          4             6           1         601
+// spray&wait   ->   6 + 6     64             1               2           512          4             6           1        602
 //
 
 packet KDataMsg {
@@ -29,10 +30,12 @@ packet KDataMsg {
     // destination oriented delivery specific fields
     string originatorNodeName;
     string finalDestinationNodeName;
-    bool destinationOriented = false;
+    bool destinationOriented = true;
 
     // keetchi specific fields
     int goodnessValue = 50;
+	 // sparway&wait specific fields
+	 int duplicates;
 
     // epidemic routing specific fields
     string messageID;
@@ -115,4 +118,6 @@ packet KDataRequestMsg {
 
     // epidemic routing specific fields
     string messageIDHashVector[];  // request vector
+//spay wait specific
+string originatorNodeName;
 }

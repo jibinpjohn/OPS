@@ -28,6 +28,7 @@ module KHeraldNode
         // 1 = RRS
         // 2 = Keetchi
         // 3 = Epidemic
+//4 = spray and wait
         int forwardingLayer = default(2);
 
         // build own address from nodeID (in the form of a MAC address)
@@ -70,6 +71,12 @@ module KHeraldNode
         }
         
 	forwarding: KEpidemicRoutingLayer if forwardingLayer == 3 {
+            parameters:
+                ownMACAddress = ownAddress;
+                @display("p=120,112");
+        }
+
+	forwarding: KSpraywaitRoutingLayer if forwardingLayer == 4 {
             parameters:
                 ownMACAddress = ownAddress;
                 @display("p=120,112");
