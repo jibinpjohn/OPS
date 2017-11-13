@@ -63,20 +63,23 @@ def parse_param_n_open_files(argv):
     print "Delivery Ratio:               ", outputfile1.name
 
 def extract_from_log():
-    global inputfile
+    global inputfile,outputfile1
     global tempfile1
     global max_sim_time
-
+    outputfile1.write("# data generated :: data received  :: average data delay \n")
     tempfile1.write("# all required tags from log file\n")
-
+    
     for line in inputfile:
-        if "INFO" in line and (":: At Source ::" in line or\
-            ":: At Destination ::" in line):
-            words = line.split("::")
+       
+        if "INFO" in line and (("<UI>" in line and ("DM" in line)) or\
+            "DESTINATION" in line):
+	    
+            words = line.split(">!<")
             sim_time = float(words[1].strip())
+            #print "simulation time is",sim_time
             if max_sim_time == 0.0 or (max_sim_time > 0.0 and sim_time <= max_sim_time):
                 tempfile1.write(line)
-
+		outputfile1.write(line)
 def accumulate_and_show_delivery_data():
     global tempfile1
     global outputfile1
@@ -87,7 +90,8 @@ def accumulate_and_show_delivery_data():
     global accumilated_delay
 
     outputfile1.write("# data generated :: data received  :: average data delay \n")
-    outputfile2.write("# delay \n")
+   
+    outputfile2.write("The message ID:"+"                                            :   Delay"+ "\n")
 
     tempfile1.seek(0)
 
@@ -95,43 +99,62 @@ def accumulate_and_show_delivery_data():
         if line.strip().startswith("#"):
             continue
 
-        if ":: At Source ::" in line:
-            words = line.split("::")
+        if "<UI>" in line and ("DM" in line):
+            words = line.split(">!<")
             found = False
+	   
             for data_item in data_items:
-                if data_item.data_name == words[5].strip():
+		
+                if data_item.data_name == words[8].strip():
                     found = True
                     break
             if not found:
-                data_item = Data_Item(words[5].strip(), words[1].strip())
+                data_item = Data_Item(words[8].strip(), words[1].strip())
+		#print "The generated data:",words[8].strip(),"time of generation",words[1].strip()
+		
                 data_items.append(data_item)
+		
                 data_generated += 1
+		#print data_items[data_generated-1].received_count
             else:
-                print 'More than once generated data ' + words[5].strip()
+                print 'More than once generated data ' + words[8].strip()
                 sys.exit(2)
 
 
-        elif ":: At Destination ::" in line:
-            words = line.split("::")
+        elif "DESTINATION" in line:
+            words = line.split(">!<")
             found = False
+	    
             for data_item in data_items:
-                if data_item.data_name == words[5].strip():
-                    found = True
-                    break
+                if data_item.data_name == words[6].strip():
+                   found = True
+		   #print found
+                   break
             if found:
-                data_item.received_count += 1
-                if data_item.received_count == 1:
+                #data_item.received_count += 1
+                if data_item.received_count == 0:
                     data_received += 1
                     data_delay = float(words[1].strip()) - float(data_item.creation_time)
+		    print 'message ID:',words[6].strip()
+		    print 'the delivery delay',data_delay
+		    data_item.received_count += 1
                     accumilated_delay += data_delay
-                    outputfile2.write(str(data_delay) + "\n")
+                    outputfile2.write("message ID:"+words[6].strip()+"                       :"+str(data_delay) + "\n")
+		else:
+		    data_item.received_count += 1
+		    print 'message ID:',words[6].strip()
+		    print 'the copy recieved',data_item.received_count
+		    data_delay = float(words[1].strip()) - float(data_item.creation_time)
+		    print 'the delivery delay',data_delay
             else:
-                print 'Non generated data ' + words[5].strip()
+                print 'Non generated data ' + words[6].strip()
                 sys.exit(2)
         else:
             print "Unknown line - " + line
 
-    outputfile1.write(str(data_generated) + " :: " + str(data_received) + " :: " + str(accumilated_delay / data_received) + "\n")
+    outputfile2.write( "Total Number of messages has been generated :: Total messages reached in Destination:: Average delivery delay"  + "\n")
+    outputfile2.write(str(data_generated) + "                                        :: " + str(data_received) + "                                 :: " + str(accumilated_delay / data_received) + "\n")
+    #outputfile2.write(str(data_generated) + " :: "+ "\n")
 
 def close_files():
     global inputfile
