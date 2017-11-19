@@ -28,7 +28,8 @@ void KSpraywaitRoutingLayer::initialize(int stage)
 
         syncedNeighbourListIHasChanged = TRUE;
 
-		L=4;
+	L=par("noDuplicate");
+	EV_FATAL << KSPRAYWAITROUTINGLAYER_SIMMODULEINFO << "TheNOOFCOPIES:"<<L<<" \n";
 
     } else if (stage == 1) {
 
@@ -521,11 +522,30 @@ void KSpraywaitRoutingLayer::handleDataMsgFromLowerLayer(cMessage *msg)
         iteratorRegisteredApps++;
     }
     if (found) {
-        send(msg, "upperLayerOut");
+      if (omnetDataMsg->getDestinationOriented())
+      {
+        if(strstr(getParentModule()->getFullName(), omnetDataMsg->getFinalDestinationNodeName()) != NULL)
 
-        if (logging) {EV_INFO << KSPRAYWAITROUTINGLAYER_SIMMODULEINFO << ">!<" << ownMACAddress << ">!<UO>!<DM>!<" << omnetDataMsg->getSourceAddress() << ">!<"
-            << omnetDataMsg->getDestinationAddress() << ">!<" << omnetDataMsg->getDataName() << ">!<" << omnetDataMsg->getGoodnessValue() << ">!<"
-            << omnetDataMsg->getByteLength() << "\n";}
+        {
+          send(msg, "upperLayerOut");
+          if (logging) {EV_INFO << KSPRAYWAITROUTINGLAYER_SIMMODULEINFO << ">!<" << ownMACAddress << ">!<UO>!<DM>!<" << omnetDataMsg->getSourceAddress() << ">!<"
+              << omnetDataMsg->getDestinationAddress() << ">!<" << omnetDataMsg->getDataName() << ">!<" << omnetDataMsg->getGoodnessValue() << ">!<"
+              << omnetDataMsg->getByteLength() << "\n";}
+        }
+        else
+        {
+          delete msg;
+        }
+        }
+      else
+        {
+          send(msg, "upperLayerOut");
+          if (logging) {EV_INFO << KSPRAYWAITROUTINGLAYER_SIMMODULEINFO << ">!<" << ownMACAddress << ">!<UO>!<DM>!<" << omnetDataMsg->getSourceAddress() << ">!<"
+              << omnetDataMsg->getDestinationAddress() << ">!<" << omnetDataMsg->getDataName() << ">!<" << omnetDataMsg->getGoodnessValue() << ">!<"
+              << omnetDataMsg->getByteLength() << "\n";}
+
+          }
+
 
     } else {
         delete msg;
@@ -702,6 +722,8 @@ void KSpraywaitRoutingLayer::handleDataRequestMsgFromLowerLayer(cMessage *msg)
 
 
 					send(dataMsg, "lowerLayerOut");
+          if (logging) {EV_INFO << KSPRAYWAITROUTINGLAYER_SIMMODULEINFO << ">!<" << ownMACAddress << ">!<LO>!<DM>!<" << dataMsg->getSourceAddress() << ">!<"
+              << dataMsg->getDestinationAddress() << ">!<" << dataMsg->getByteLength() << ">!<" << dataMsg->getDataName() << ">!<"<<dataMsg->getDuplicates()<< "\n";}
 
 
 	if(strstr(cacheEntry->finalDestinationNodeName.c_str(), dataRequestMsg->getOriginatorNodeName()) != NULL)
@@ -735,6 +757,9 @@ void KSpraywaitRoutingLayer::handleDataRequestMsgFromLowerLayer(cMessage *msg)
 
 					send(dataMsg, "lowerLayerOut");
 
+          if (logging) {EV_INFO << KSPRAYWAITROUTINGLAYER_SIMMODULEINFO << ">!<" << ownMACAddress << ">!<LO>!<DM>!<" << dataMsg->getSourceAddress() << ">!<"
+              << dataMsg->getDestinationAddress() << ">!<" << dataMsg->getByteLength() << ">!<" << dataMsg->getDataName() << ">!<"<<dataMsg->getDuplicates()<< "\n";}
+
 
 					//code to remove message from cache is added
 
@@ -751,8 +776,7 @@ void KSpraywaitRoutingLayer::handleDataRequestMsgFromLowerLayer(cMessage *msg)
 
 			}
 
-            if (logging) {EV_INFO << KSPRAYWAITROUTINGLAYER_SIMMODULEINFO << ">!<" << ownMACAddress << ">!<LO>!<DM>!<" << dataMsg->getSourceAddress() << ">!<"
-                << dataMsg->getDestinationAddress() << ">!<" << dataMsg->getByteLength() << ">!<" << dataMsg->getDataName() << "\n";}
+
 
         }
 
