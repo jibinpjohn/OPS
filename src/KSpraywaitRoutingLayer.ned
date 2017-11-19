@@ -24,6 +24,9 @@ simple KSpraywaitRoutingLayer
         // maximum amount of hops to forward for a data
         int maximumHopCount = default(10);
 	
+       // maximum amount of hops to forward for a data
+        int noDuplicate = default(4);
+	
 	// maximum duration to use when obtaining a random backoff duration
         double maximumRandomBackoffDuration @unit(s) = default(5s);
 
