@@ -56,8 +56,8 @@ def parse_param_n_open_files(argv):
 
     inputfile = open(inputfilename, "r")
     tempfile1 = tempfile.TemporaryFile(dir='.')
-    outputfile1 = open(re.sub('.txt', '_totx_parsed.txt', newfilename), "w+")
-    outputfile2 = open(re.sub('.txt', '_totx_result.txt', newfilename), "w+")
+    outputfile1 = open(re.sub('.txt', '_todie_parsed.txt', newfilename), "w+")
+    outputfile2 = open(re.sub('.txt', '_todie_result.txt', newfilename), "w+")
 
     print "Input File:                   ", inputfile.name
     print "Temporary File:               ", tempfile1.name
@@ -114,7 +114,8 @@ def accumulate_and_show_delivery_data():
 		    	data_item.transmission=data_item.transmission+int(words[10].strip())
                     	print 'Now the the no. of transmission:',data_item.transmission
                     else:
-			print 'The data message is already RECIEVED so don\'t have to add ',data_item.transmission
+			data_item.transmission=data_item.transmission+int(words[10].strip())
+			print 'The data message is already RECIEVED but still adding to the count',data_item.transmission
 
                     found = True
                     break

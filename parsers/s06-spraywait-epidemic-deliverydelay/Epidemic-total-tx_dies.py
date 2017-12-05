@@ -56,8 +56,8 @@ def parse_param_n_open_files(argv):
 
     inputfile = open(inputfilename, "r")
     tempfile1 = tempfile.TemporaryFile(dir='.')
-    outputfile1 = open(re.sub('.txt', '_totx_parsed.txt', newfilename), "w+")
-    outputfile2 = open(re.sub('.txt', '_totx_result.txt', newfilename), "w+")
+    outputfile1 = open(re.sub('.txt', '_todie_parsed.txt', newfilename), "w+")
+    outputfile2 = open(re.sub('.txt', '_todie_result.txt', newfilename), "w+")
 
     print "Input File:                   ", inputfile.name
     print "Temporary File:               ", tempfile1.name
@@ -105,21 +105,22 @@ def accumulate_and_show_delivery_data():
         if "LO" in line and ("DM" in line):
             words = line.split(">!<")
             found = False
-            print words[9].strip(),":",words[10].strip()
+            print words[9].strip()
             for data_item in data_items:
                 if data_item.data_name == words[9].strip():
 
 		    if data_item.received_count == 0:
 			print 'data message',data_item.data_name,'already existing and transmission is:',data_item.transmission
-		    	data_item.transmission=data_item.transmission+int(words[10].strip())
+		    	data_item.transmission=int(data_item.transmission)+1
                     	print 'Now the the no. of transmission:',data_item.transmission
                     else:
-			print 'The data message is already RECIEVED so don\'t have to add ',data_item.transmission
+			data_item.transmission=int(data_item.transmission)+1
+			print 'The data message is already RECIEVED but still adding to the count',data_item.transmission
 
                     found = True
                     break
             if not found:
-                data_item = Data_Item(words[9].strip(), int(words[10].strip()))
+                data_item = Data_Item(words[9].strip(), 1)
 		print 'data message NOT FOUND:',words[9].strip()
 
 
