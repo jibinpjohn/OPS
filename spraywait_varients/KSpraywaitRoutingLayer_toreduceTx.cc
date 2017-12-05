@@ -4,6 +4,7 @@
 // @author : Jibin John (adu@comnets.uni-bremen.de)
 // @date   : 02-may-2017
 //
+//This code is to reduce the Metric  total no. of transmission.
 //
 
 #include "KSpraywaitRoutingLayer.h"
