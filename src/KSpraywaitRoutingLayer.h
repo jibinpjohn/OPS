@@ -36,15 +36,18 @@ class KSpraywaitRoutingLayer: public cSimpleModule
 
     private:
         string ownMACAddress;
+        string sprayFlavour;
         int nextAppID;
         int maximumCacheSize;
         double antiEntropyInterval;
         int maximumHopCount;
         double maximumRandomBackoffDuration;
         int logging;
-	int newcopies;
-	int L;
 
+	      int newcopies;
+	       int L;
+       
+         bool DisableExcesslog;
         int currentCacheSize;
 
         struct AppInfo {
@@ -53,10 +56,12 @@ class KSpraywaitRoutingLayer: public cSimpleModule
             string prefixName;
         };
 
-        struct CacheEntry {
+
+
+struct CacheEntry {
             string messageID;
             int hopCount;
-	    int copies;
+	          int copies;
             string dataName;
             int realPayloadSize;
             string dummyPayloadContent;
@@ -70,7 +75,7 @@ class KSpraywaitRoutingLayer: public cSimpleModule
             string finalDestinationNodeName;
 
             int goodnessValue;
-
+            int hopsTravelled;
 
             double createdTime;
             double updatedTime;
