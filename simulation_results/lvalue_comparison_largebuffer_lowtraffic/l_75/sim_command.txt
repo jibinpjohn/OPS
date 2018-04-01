@@ -1,0 +1,1 @@
+# ./ops-simu -u Cmdenv -f simulations/omnetpp-promote-spraywait_L.ini -n simulations/:src/:modules/inet/src/ -l keetchi -l INET --result-dir=./out/2018-03-31_15-15-12_omnetpp-promote-spraywait_L
